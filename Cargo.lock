@@ -773,7 +773,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "questbook-solana"
+name = "questbook"
 version = "0.1.0"
 dependencies = [
  "anchor-lang",

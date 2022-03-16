@@ -1,12 +1,12 @@
 [package]
-name = "questbook-solana"
+name = "questbook"
 version = "0.1.0"
 description = "Created with Anchor"
 edition = "2018"
 
 [lib]
 crate-type = ["cdylib", "lib"]
-name = "questbook_solana"
+name = "questbook"
 
 [features]
 no-entrypoint = []
