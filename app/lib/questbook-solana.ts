@@ -22,30 +22,31 @@ export default class Questbook {
     })
   }
 
-  async rpcCreateWorkspace(metadataHash: string, adminEmail: string): Promise<anchor.web3.PublicKey> {
+  async rpcCreateWorkspace(metadataHash: string, adminEmail: string, authority?: anchor.web3.Keypair): Promise<anchor.web3.PublicKey> {
     const workspace = anchor.web3.Keypair.generate()
     const [workspaceAdminAcc, _w] = await this.getWorkspaceAdminAccount(workspace.publicKey, 0)
     
     await this.program.rpc.createWorkspace(metadataHash, adminEmail, {
       accounts: {
         workspace: workspace.publicKey,
-        workspaceOwner: this.provider.wallet.publicKey,
+        workspaceOwner: authority != null ? authority.publicKey : this.provider.wallet.publicKey,
         workspaceAdmin: workspaceAdminAcc,
         payer: this.provider.wallet.publicKey,
         systemProgram: anchor.web3.SystemProgram.programId
       },
-      signers: [workspace]
+      signers: [workspace, authority]
     })
 
     return workspace.publicKey
   }
 
-  async rpcUpdateWorkspace(workspace: anchor.web3.PublicKey, metadataHash: string) {
+  async rpcUpdateWorkspace(workspace: anchor.web3.PublicKey, metadataHash: string, authority?: anchor.web3.Keypair) {
     await this.program.rpc.updateWorkspace(metadataHash, {
       accounts: {
         workspace: workspace,
-        authority: this.provider.wallet.publicKey,
-      }
+        authority: authority != null ? authority.publicKey : this.provider.wallet.publicKey,
+      },
+      signers: [authority]
     })
   }
 

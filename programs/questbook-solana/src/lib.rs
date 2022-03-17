@@ -24,4 +24,8 @@ pub mod questbook {
     ) -> Result<()> {
         instructions::create_workspace::handler(ctx, metadata_hash, admin_email)
     }
+
+    pub fn update_workspace(ctx: Context<UpdateWorkspace>, metadata_hash: String) -> Result<()> {
+        instructions::update_workspace::handler(ctx, metadata_hash)
+    }
 }
