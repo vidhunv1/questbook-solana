@@ -4,7 +4,7 @@ import { Program } from "@project-serum/anchor";
 import { Questbook as QuestbookInterface } from "../target/types/questbook";
 import Questbook from '../app/lib/questbook-solana'
 
-describe("questbook", () => {
+describe("initialize", () => {
   const provider = anchor.Provider.env()
   anchor.setProvider(provider)
 

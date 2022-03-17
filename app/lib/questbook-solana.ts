@@ -21,7 +21,46 @@ export default class Questbook {
       }
     })
   }
-  
+
+  async rpcCreateWorkspace(metadataHash: string, adminEmail: string): Promise<anchor.web3.PublicKey> {
+    const workspace = anchor.web3.Keypair.generate()
+    const [workspaceAdminAcc, _w] = await this.getWorkspaceAdminAccount(workspace.publicKey, 0)
+    
+    await this.program.rpc.createWorkspace(metadataHash, adminEmail, {
+      accounts: {
+        workspace: workspace.publicKey,
+        workspaceOwner: this.provider.wallet.publicKey,
+        workspaceAdmin: workspaceAdminAcc,
+        payer: this.provider.wallet.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId
+      },
+      signers: [workspace]
+    })
+
+    return workspace.publicKey
+  }
+
+  async rpcUpdateWorkspace(workspace: anchor.web3.PublicKey, metadataHash: string) {
+    await this.program.rpc.updateWorkspace(metadataHash, {
+      accounts: {
+        workspace: workspace,
+        authority: this.provider.wallet.publicKey,
+      }
+    })
+  }
+
+  async getWorkspaceState(pk: anchor.web3.PublicKey) {
+    return this.program.account.workspace.fetch(pk)
+  }
+
+  async getWorkspaceAdminAccount(workspace: anchor.web3.PublicKey, adminId: number) {
+    return anchor.web3.PublicKey.findProgramAddress([
+      Buffer.from('workspace_admin'),
+      workspace.toBuffer(),
+      Buffer.from(adminId+'')
+    ], this.program.programId)
+  }
+
   async getProgramState() {
     const [programAcc, _programBump] = await this.getProgramAccount()
     return this.program.account.programInfo.fetch(programAcc)
