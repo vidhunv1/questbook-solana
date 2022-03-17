@@ -7,11 +7,21 @@ pub mod errors;
 pub mod instructions;
 pub mod state;
 
+use errors::ErrorCode;
+
 #[program]
 pub mod questbook {
     use super::*;
 
     pub fn initialize(ctx: Context<Initialize>, authority: Pubkey) -> Result<()> {
         instructions::initialize::handler(ctx, authority)
+    }
+
+    pub fn create_workspace(
+        ctx: Context<CreateWorkspace>,
+        metadata_hash: String,
+        admin_email: String,
+    ) -> Result<()> {
+        instructions::create_workspace::handler(ctx, metadata_hash, admin_email)
     }
 }

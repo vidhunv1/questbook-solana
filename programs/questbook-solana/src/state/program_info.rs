@@ -7,8 +7,6 @@ pub const PROGRAM_INFO_SEED: &str = "program_info";
 #[derive(Default)]
 pub struct ProgramInfo {
     pub version: u16,
-
     pub authority: Pubkey,
-
     pub bump: u8,
 }
