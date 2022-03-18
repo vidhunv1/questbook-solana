@@ -30,7 +30,7 @@ describe("workspace", () => {
   });
 
   it('updates workspace metadataHash', async () => {
-    await questbook.rpcUpdateWorkspace(w1, "https://ipfs.io/3")
+    await questbook.rpcUpdateWorkspace(w1, "https://ipfs.io/3", 0)
     const w1State = await questbook.getWorkspaceState(w1)
     assert.equal(w1State.metadataHash, "https://ipfs.io/3")
     assert.equal(w1State.authority.toString(), user.toString())
@@ -44,7 +44,7 @@ describe("workspace", () => {
 
     const w3 = await questbook.rpcCreateWorkspace("https://ipfs.io/1", "a@b.com", realAuthority)
     await assert.rejects(
-      questbook.rpcUpdateWorkspace(w3, "https://ipfs.io/3", notAuthority),
+      questbook.rpcUpdateWorkspace(w3, "https://ipfs.io/3", 0, notAuthority),
       { message: '2001: A has_one constraint was violated'}
     )
   })

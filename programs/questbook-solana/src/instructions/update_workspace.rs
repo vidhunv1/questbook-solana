@@ -1,10 +1,16 @@
-use crate::state::Workspace;
+use crate::state::{Workspace, WorkspaceAdmin};
 use anchor_lang::prelude::*;
 
 #[derive(Accounts)]
 pub struct UpdateWorkspace<'info> {
-    #[account(mut, has_one = authority)]
+    #[account(mut)]
     pub workspace: Account<'info, Workspace>,
+
+    #[account(
+        constraint = workspace_admin.workspace == workspace.key(),
+        has_one = authority
+    )]
+    pub workspace_admin: Account<'info, WorkspaceAdmin>,
     pub authority: Signer<'info>,
 }
 

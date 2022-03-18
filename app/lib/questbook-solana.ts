@@ -40,10 +40,12 @@ export default class Questbook {
     return workspace.publicKey
   }
 
-  async rpcUpdateWorkspace(workspace: anchor.web3.PublicKey, metadataHash: string, authority?: anchor.web3.Keypair) {
+  async rpcUpdateWorkspace(workspace: anchor.web3.PublicKey, metadataHash: string, adminId: number, authority?: anchor.web3.Keypair) {
+    const [workspaceAdminAcc, _w] = await this.getWorkspaceAdminAccount(workspace, adminId)
     await this.program.rpc.updateWorkspace(metadataHash, {
       accounts: {
         workspace: workspace,
+        workspaceAdmin: workspaceAdminAcc,
         authority: authority != null ? authority.publicKey : this.provider.wallet.publicKey,
       },
       signers: [authority]
