@@ -42,7 +42,7 @@ export default class Questbook {
 
   async rpcUpdateWorkspace(workspace: anchor.web3.PublicKey, metadataHash: string, adminId: number, authority?: anchor.web3.Keypair) {
     const [workspaceAdminAcc, _w] = await this.getWorkspaceAdminAccount(workspace, adminId)
-    await this.program.rpc.updateWorkspace(metadataHash, {
+    await this.program.rpc.updateWorkspace(metadataHash, adminId, {
       accounts: {
         workspace: workspace,
         workspaceAdmin: workspaceAdminAcc,
