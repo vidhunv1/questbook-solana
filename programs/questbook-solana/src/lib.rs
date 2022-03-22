@@ -32,4 +32,12 @@ pub mod questbook {
     ) -> Result<()> {
         instructions::update_workspace::handler(ctx, metadata_hash, admin_id)
     }
+
+    pub fn add_workspace_admin(
+        ctx: Context<AddWorkspaceAdmin>,
+        admin_email: String,
+        admin_authority: Pubkey,
+    ) -> Result<()> {
+        instructions::add_workspace_admin::handler(ctx, admin_email, admin_authority)
+    }
 }

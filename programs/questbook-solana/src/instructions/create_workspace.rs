@@ -37,6 +37,7 @@ pub fn handler(
     workspace.authority = ctx.accounts.workspace_owner.key();
     workspace.metadata_hash = metadata_hash;
     workspace.admin_count = 1;
+    workspace.admin_index = 1;
     workspace.created_at = clock.unix_timestamp;
 
     workspace_admin.workspace = ctx.accounts.workspace.key();

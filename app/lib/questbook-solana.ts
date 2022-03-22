@@ -52,6 +52,31 @@ export default class Questbook {
     })
   }
 
+  async rpcAddWorkspaceAdmin(
+    workspace: anchor.web3.PublicKey,
+    workspaceAdminId: number,
+    workspaceAdminAuthority: anchor.web3.Keypair,
+    newAdminEmail: string,
+    newAdminAuthority: anchor.web3.PublicKey
+  ): Promise<anchor.web3.PublicKey> {
+    const workspaceState = await this.getWorkspaceState(workspace)
+    const [workspaceAdminAcc, _w1] = await this.getWorkspaceAdminAccount(workspace, workspaceAdminId)
+    const [newWorkspaceAdminAcc, _w2] = await this.getWorkspaceAdminAccount(workspace, workspaceState.adminIndex)
+    await this.program.rpc.addWorkspaceAdmin(newAdminEmail, newAdminAuthority, {
+      accounts: {
+        workspace: workspace,
+        workspaceAdmin: workspaceAdminAcc,
+        authority: workspaceAdminAuthority.publicKey,
+        newWorkspaceAdmin: newWorkspaceAdminAcc,
+        payer: this.provider.wallet.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId
+      },
+      signers: [workspaceAdminAuthority]
+    })
+
+    return newWorkspaceAdminAcc
+  }
+
   async getWorkspaceState(pk: anchor.web3.PublicKey) {
     return this.program.account.workspace.fetch(pk)
   }
@@ -62,6 +87,11 @@ export default class Questbook {
       workspace.toBuffer(),
       Buffer.from(adminId+'')
     ], this.program.programId)
+  }
+
+  async getWorkspaceAdminState(workspace: anchor.web3.PublicKey, adminId: number) {
+    const [workspaceAdminAcc, _x] = await this.getWorkspaceAdminAccount(workspace, adminId)
+    return this.program.account.workspaceAdmin.fetch(workspaceAdminAcc)
   }
 
   async getProgramState() {
