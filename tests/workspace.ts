@@ -79,4 +79,27 @@ describe("workspace", () => {
     assert.equal(newWorkspaceAdminState.email, "ad@x.com")
     assert.equal(newWorkspaceAdminState.isAdmin, true)
   })
+
+  it('removes workspace admin', async () => {
+    const newAdminAuthority = anchor.web3.Keypair.generate()
+    await questbook.rpcAddWorkspaceAdmin(w1, 0, w1Admin, "ad2@x.com", newAdminAuthority.publicKey)
+    let w1State = await questbook.getWorkspaceState(w1)
+    assert.equal(w1State.adminCount, 3)
+    assert.equal(w1State.adminIndex, 3)
+
+    // remove the last admin
+    const removeAdminId = w1State.adminIndex - 1
+    await questbook.rpcRemoveWorkspaceAdmin(w1, 0, w1Admin, w1State.adminIndex - 1)
+    w1State = await questbook.getWorkspaceState(w1)
+    const removedAdminState = await questbook.getWorkspaceAdminState(w1, removeAdminId)
+    assert.equal(w1State.adminCount, 2)
+    assert.equal(w1State.adminIndex, 3)
+    assert.equal(removedAdminState.isAdmin, false)
+
+    // removed admin should not have workspace access
+    await assert.rejects(
+      questbook.rpcUpdateWorkspace(w1, "https://ipfs.io/3", removeAdminId, newAdminAuthority),
+      { message: '6002: Not authorized' }
+    )
+  })
 });

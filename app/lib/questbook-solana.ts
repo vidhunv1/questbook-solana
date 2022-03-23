@@ -62,7 +62,7 @@ export default class Questbook {
     const workspaceState = await this.getWorkspaceState(workspace)
     const [workspaceAdminAcc, _w1] = await this.getWorkspaceAdminAccount(workspace, workspaceAdminId)
     const [newWorkspaceAdminAcc, _w2] = await this.getWorkspaceAdminAccount(workspace, workspaceState.adminIndex)
-    await this.program.rpc.addWorkspaceAdmin(newAdminEmail, newAdminAuthority, {
+    await this.program.rpc.addWorkspaceAdmin(workspaceAdminId, newAdminEmail, newAdminAuthority, {
       accounts: {
         workspace: workspace,
         workspaceAdmin: workspaceAdminAcc,
@@ -75,6 +75,28 @@ export default class Questbook {
     })
 
     return newWorkspaceAdminAcc
+  }
+
+  async rpcRemoveWorkspaceAdmin(
+    workspace: anchor.web3.PublicKey,
+    workspaceAdminId: number,
+    workspaceAdminAuthority: anchor.web3.Keypair,
+    removeAdminId: number,
+  ) {
+    const [workspaceAdminAcc, _w1] = await this.getWorkspaceAdminAccount(workspace, workspaceAdminId)
+    const [removeWorkspaceAdminAcc, _w2] = await this.getWorkspaceAdminAccount(workspace, removeAdminId)
+
+    await this.program.rpc.removeWorkspaceAdmin(workspaceAdminId, removeAdminId, {
+      accounts: {
+        workspace: workspace,
+        workspaceAdmin: workspaceAdminAcc,
+        authority: workspaceAdminAuthority.publicKey,
+        removeWorkspaceAdmin: removeWorkspaceAdminAcc,
+        payer: this.provider.wallet.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId
+      },
+      signers: [workspaceAdminAuthority]
+    })
   }
 
   async getWorkspaceState(pk: anchor.web3.PublicKey) {
