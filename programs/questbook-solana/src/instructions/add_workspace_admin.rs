@@ -40,6 +40,7 @@ pub fn handler(
 ) -> Result<()> {
     let workspace = &mut ctx.accounts.workspace;
     let new_workspace_admin = &mut ctx.accounts.new_workspace_admin;
+    let clock = Clock::get().unwrap();
 
     new_workspace_admin.admin_id = workspace.admin_index;
     new_workspace_admin.workspace = workspace.key();
@@ -50,6 +51,15 @@ pub fn handler(
 
     workspace.admin_count = workspace.admin_count + 1;
     workspace.admin_index = workspace.admin_index + 1;
+
+    msg!(
+        "WorkspaceAdminAdded: {},{},{},{},{}",
+        new_workspace_admin.workspace,
+        new_workspace_admin.admin_id,
+        new_workspace_admin.authority,
+        new_workspace_admin.email,
+        clock.unix_timestamp,
+    );
 
     Ok(())
 }

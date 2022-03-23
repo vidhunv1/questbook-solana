@@ -40,10 +40,19 @@ pub fn handler(
 ) -> Result<()> {
     let workspace = &mut ctx.accounts.workspace;
     let remove_workspace_admin = &mut ctx.accounts.remove_workspace_admin;
+    let clock = Clock::get().unwrap();
 
     workspace.admin_count = workspace.admin_count - 1;
 
     remove_workspace_admin.is_admin = false;
+
+    msg!(
+        "WorkspaceAdminRemoved: {},{},{},{}",
+        remove_workspace_admin.workspace,
+        remove_workspace_admin.admin_id,
+        remove_workspace_admin.authority,
+        clock.unix_timestamp,
+    );
 
     Ok(())
 }

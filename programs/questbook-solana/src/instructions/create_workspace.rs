@@ -42,9 +42,17 @@ pub fn handler(
 
     workspace_admin.workspace = ctx.accounts.workspace.key();
     workspace_admin.authority = ctx.accounts.workspace_owner.key();
-    workspace_admin.email = admin_email;
+    workspace_admin.email = admin_email.clone();
     workspace_admin.is_admin = true;
     workspace_admin.bump = *ctx.bumps.get("workspace_admin").unwrap();
+
+    msg!(
+        "WorkspaceCreated: {},{},{},{}",
+        workspace_admin.workspace,
+        workspace_admin.authority,
+        workspace_admin.email,
+        clock.unix_timestamp,
+    );
 
     Ok(())
 }

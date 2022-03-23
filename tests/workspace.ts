@@ -89,7 +89,7 @@ describe("workspace", () => {
 
     // remove the last admin
     const removeAdminId = w1State.adminIndex - 1
-    await questbook.rpcRemoveWorkspaceAdmin(w1, 0, w1Admin, w1State.adminIndex - 1)
+    await questbook.rpcRemoveWorkspaceAdmin(w1, 0, w1Admin, removeAdminId)
     w1State = await questbook.getWorkspaceState(w1)
     const removedAdminState = await questbook.getWorkspaceAdminState(w1, removeAdminId)
     assert.equal(w1State.adminCount, 2)

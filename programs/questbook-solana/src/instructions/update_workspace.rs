@@ -21,7 +21,16 @@ pub struct UpdateWorkspace<'info> {
 
 pub fn handler(ctx: Context<UpdateWorkspace>, metadata_hash: String, _admin_id: u32) -> Result<()> {
     let workspace = &mut ctx.accounts.workspace;
+    let clock = Clock::get().unwrap();
     workspace.metadata_hash = metadata_hash;
+
+    msg!(
+        "WorkspaceUpdated: {},{},{},{}",
+        workspace.key(),
+        workspace.authority,
+        workspace.metadata_hash,
+        clock.unix_timestamp,
+    );
 
     Ok(())
 }
