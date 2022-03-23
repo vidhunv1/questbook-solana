@@ -1,13 +1,18 @@
 use crate::state::{Workspace, WorkspaceAdmin, WORKSPACE_ADMIN_SEED, WORKSPACE_ADMIN_SIZE};
+use crate::ErrorCode;
 use anchor_lang::prelude::*;
 
 #[derive(Accounts)]
+#[instruction(workspace_admin_id: u32)]
 pub struct AddWorkspaceAdmin<'info> {
     #[account(mut, constraint = workspace.admin_count < 1000)]
     pub workspace: Account<'info, Workspace>,
 
     #[account(
-        constraint = workspace_admin.workspace == workspace.key(),
+        constraint = workspace_admin.workspace == workspace.key() @ ErrorCode::AdminNotInWorkspace,
+        constraint = workspace_admin.is_admin == true @ ErrorCode::NotAuthorized,
+        seeds=[WORKSPACE_ADMIN_SEED.as_bytes(), &workspace.key().to_bytes(), workspace_admin_id.to_string().as_bytes()],
+        bump=workspace_admin.bump,
         has_one = authority
     )]
     pub workspace_admin: Account<'info, WorkspaceAdmin>,
@@ -29,6 +34,7 @@ pub struct AddWorkspaceAdmin<'info> {
 
 pub fn handler(
     ctx: Context<AddWorkspaceAdmin>,
+    _workspace_admin_id: u32,
     admin_email: String,
     admin_authority: Pubkey,
 ) -> Result<()> {

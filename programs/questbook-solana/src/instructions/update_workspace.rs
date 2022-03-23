@@ -10,6 +10,7 @@ pub struct UpdateWorkspace<'info> {
 
     #[account(
         constraint = workspace_admin.workspace == workspace.key() @ ErrorCode::AdminNotInWorkspace,
+        constraint = workspace_admin.is_admin == true @ ErrorCode::NotAuthorized,
         seeds=[WORKSPACE_ADMIN_SEED.as_bytes(), &workspace.key().to_bytes(), admin_id.to_string().as_bytes()],
         bump=workspace_admin.bump,
         has_one = authority

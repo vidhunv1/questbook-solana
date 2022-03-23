@@ -35,9 +35,23 @@ pub mod questbook {
 
     pub fn add_workspace_admin(
         ctx: Context<AddWorkspaceAdmin>,
+        workspace_admin_id: u32,
         admin_email: String,
         admin_authority: Pubkey,
     ) -> Result<()> {
-        instructions::add_workspace_admin::handler(ctx, admin_email, admin_authority)
+        instructions::add_workspace_admin::handler(
+            ctx,
+            workspace_admin_id,
+            admin_email,
+            admin_authority,
+        )
+    }
+
+    pub fn remove_workspace_admin(
+        ctx: Context<RemoveWorkspaceAdmin>,
+        admin_id: u32,
+        remove_admin_id: u32,
+    ) -> Result<()> {
+        instructions::remove_workspace_admin::handler(ctx, admin_id, remove_admin_id)
     }
 }

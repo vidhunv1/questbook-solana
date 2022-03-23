@@ -6,4 +6,6 @@ pub enum ErrorCode {
     NotSupported,
     #[msg("Admin not in worksapce")]
     AdminNotInWorkspace,
+    #[msg("Not authorized")]
+    NotAuthorized,
 }
