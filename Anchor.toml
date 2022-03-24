@@ -1,6 +1,6 @@
 [features]
 seeds = false
-[programs.localnet]
+[programs.devnet]
 questbook = "FE2wm72uyHc7vXE8X6WCVrePq9L8MFh7EpDFsLQXNRZv"
 
 [registry]
