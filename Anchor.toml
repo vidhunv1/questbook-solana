@@ -1,14 +1,14 @@
 [features]
 seeds = false
 [programs.localnet]
-questbook = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+questbook = "FE2wm72uyHc7vXE8X6WCVrePq9L8MFh7EpDFsLQXNRZv"
 
 [registry]
 url = "https://anchor.projectserum.com"
 
 [provider]
-cluster = "localnet"
-wallet = "~/.config/solana/id.json"
+cluster = "devnet"
+wallet = "/Users/gyan/config/solana/devnet-test.json"
 
 [scripts]
 test = "yarn run ts-mocha -p ./tsconfig.json -t 1000000 tests/index.ts"

@@ -49,8 +49,8 @@ pub fn handler(
     msg!(
         "WorkspaceCreated: {},{},{},{}",
         workspace_admin.workspace,
+        ctx.accounts.workspace.metadata_hash,
         workspace_admin.authority,
-        workspace_admin.email,
         clock.unix_timestamp,
     );
 
