@@ -47,8 +47,9 @@ pub fn handler(
     workspace_admin.bump = *ctx.bumps.get("workspace_admin").unwrap();
 
     msg!(
-        "WorkspaceCreated: {},{},{},{}",
+        "WorkspaceCreated: {},{},{},{},{}",
         workspace_admin.workspace,
+        ctx.accounts.workspace.metadata_hash,
         workspace_admin.authority,
         workspace_admin.email,
         clock.unix_timestamp,
