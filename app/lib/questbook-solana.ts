@@ -99,8 +99,31 @@ export default class Questbook {
     })
   }
 
+  async rpcCreateGrant(adminId: number, metadataHash: string, workspace: anchor.web3.PublicKey, workspaceAdminAuthority: anchor.web3.Keypair) {
+    const grant = anchor.web3.Keypair.generate()
+    const [workspaceAdminAcc, _w] = await this.getWorkspaceAdminAccount(workspace, adminId)
+
+    await this.program.rpc.createGrant(adminId, metadataHash, {
+      accounts: {
+        grant: grant.publicKey,
+        workspace: workspace,
+        workspaceAdmin: workspaceAdminAcc,
+        authority: workspaceAdminAuthority.publicKey,
+        payer: this.provider.wallet.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId
+      },
+      signers: [workspaceAdminAuthority, grant]
+    })
+
+    return grant.publicKey
+  }
+
   async getWorkspaceState(pk: anchor.web3.PublicKey) {
     return this.program.account.workspace.fetch(pk)
+  }
+
+  async getGrantState(pk: anchor.web3.PublicKey) {
+    return this.program.account.grant.fetch(pk)
   }
 
   async getWorkspaceAdminAccount(workspace: anchor.web3.PublicKey, adminId: number) {
