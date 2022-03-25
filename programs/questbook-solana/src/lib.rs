@@ -54,4 +54,12 @@ pub mod questbook {
     ) -> Result<()> {
         instructions::remove_workspace_admin::handler(ctx, admin_id, remove_admin_id)
     }
+
+    pub fn create_grant(
+        ctx: Context<CreateGrant>,
+        admin_id: u32,
+        metadata_hash: String,
+    ) -> Result<()> {
+        instructions::create_grant::handler(ctx, admin_id, metadata_hash)
+    }
 }
