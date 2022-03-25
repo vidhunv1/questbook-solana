@@ -62,4 +62,12 @@ pub mod questbook {
     ) -> Result<()> {
         instructions::create_grant::handler(ctx, admin_id, metadata_hash)
     }
+
+    pub fn update_grant(
+        ctx: Context<UpdateGrant>,
+        admin_id: u32,
+        metadata_hash: String,
+    ) -> Result<()> {
+        instructions::update_grant::handler(ctx, admin_id, metadata_hash)
+    }
 }
