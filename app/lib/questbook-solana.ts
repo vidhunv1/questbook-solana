@@ -132,6 +132,21 @@ export default class Questbook {
     })
   }
 
+
+  async rpcUpdateGrantAccessibility(adminId: number, canAcceptApplications: boolean, grant: anchor.web3.PublicKey, workspace: anchor.web3.PublicKey, workspaceAdminAuthority: anchor.web3.Keypair) {
+    const [workspaceAdminAcc, _w] = await this.getWorkspaceAdminAccount(workspace, adminId)
+
+    await this.program.rpc.updateGrantAccessibility(adminId, canAcceptApplications, {
+      accounts: {
+        grant: grant,
+        workspace: workspace,
+        workspaceAdmin: workspaceAdminAcc,
+        authority: workspaceAdminAuthority.publicKey,
+      },
+      signers: [workspaceAdminAuthority]
+    })
+  }
+
   async getWorkspaceState(pk: anchor.web3.PublicKey) {
     return this.program.account.workspace.fetch(pk)
   }

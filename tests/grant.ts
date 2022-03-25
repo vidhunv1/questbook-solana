@@ -23,12 +23,21 @@ describe("grant", () => {
     assert.equal(grantState.active, true)
   })
 
-  it('updates a grant', async () => {
+  it('updates grant metadata hash', async () => {
     await questbook.rpcUpdateGrant(0, "ipfs.io/3", grant1, w1, w1Admin)
 
     const grantState = await questbook.getGrantState(grant1)
     assert.equal(grantState.workspace.toString(), w1.toString())
     assert.equal(grantState.metadataHash, "ipfs.io/3")
     assert.equal(grantState.active, true)
+  })
+
+  it('updates grant accessibility', async () => {
+    await questbook.rpcUpdateGrantAccessibility(0, false, grant1, w1, w1Admin)
+
+    const grantState = await questbook.getGrantState(grant1)
+    assert.equal(grantState.workspace.toString(), w1.toString())
+    assert.equal(grantState.metadataHash, "ipfs.io/3")
+    assert.equal(grantState.active, false)
   })
 });
