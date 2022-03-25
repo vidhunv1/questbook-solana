@@ -70,4 +70,12 @@ pub mod questbook {
     ) -> Result<()> {
         instructions::update_grant::handler(ctx, admin_id, metadata_hash)
     }
+
+    pub fn update_grant_accessibility(
+        ctx: Context<UpdateGrantAccessibility>,
+        admin_id: u32,
+        can_accept_application: bool,
+    ) -> Result<()> {
+        instructions::update_grant_accessibility::handler(ctx, admin_id, can_accept_application)
+    }
 }
