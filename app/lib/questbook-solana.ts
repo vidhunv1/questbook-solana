@@ -25,6 +25,10 @@ export default class Questbook {
   async rpcCreateWorkspace(metadataHash: string, adminEmail: string, authority?: anchor.web3.Keypair): Promise<anchor.web3.PublicKey> {
     const workspace = anchor.web3.Keypair.generate()
     const [workspaceAdminAcc, _w] = await this.getWorkspaceAdminAccount(workspace.publicKey, 0)
+    const signers = [workspace]
+    if (authority) {
+      signers.push(authority)
+    }
 
     await this.program.rpc.createWorkspace(metadataHash, adminEmail, {
       accounts: {
@@ -34,7 +38,7 @@ export default class Questbook {
         payer: this.provider.wallet.publicKey,
         systemProgram: anchor.web3.SystemProgram.programId
       },
-      signers: [workspace, authority]
+      signers
     })
 
     return workspace.publicKey
@@ -42,13 +46,18 @@ export default class Questbook {
 
   async rpcUpdateWorkspace(workspace: anchor.web3.PublicKey, metadataHash: string, adminId: number, authority?: anchor.web3.Keypair) {
     const [workspaceAdminAcc, _w] = await this.getWorkspaceAdminAccount(workspace, adminId)
+    const signers = []
+    if (authority) {
+      signers.push(authority)
+    }
+
     await this.program.rpc.updateWorkspace(metadataHash, adminId, {
       accounts: {
         workspace: workspace,
         workspaceAdmin: workspaceAdminAcc,
         authority: authority != null ? authority.publicKey : this.provider.wallet.publicKey,
       },
-      signers: [authority]
+      signers
     })
   }
 
@@ -147,6 +156,25 @@ export default class Questbook {
     })
   }
 
+  async rpcSubmitApplication(milestone: number, metadataHash: string, grant: anchor.web3.PublicKey, authority?: anchor.web3.Keypair) {
+    const [applicationAcc, _w] = await this.getApplicationAccount(authority?.publicKey || this.provider.wallet.publicKey, grant)
+    const signers = []
+    if (authority) {
+      signers.push(authority)
+    }
+
+    await this.program.rpc.submitApplication(milestone, metadataHash, {
+      accounts: {
+        application: applicationAcc,
+        authority: authority != null ? authority.publicKey : this.provider.wallet.publicKey,
+        grant: grant,
+        payer: this.provider.wallet.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId
+      },
+      signers
+    })
+  }
+
   async getWorkspaceState(pk: anchor.web3.PublicKey) {
     return this.program.account.workspace.fetch(pk)
   }
@@ -168,12 +196,25 @@ export default class Questbook {
     return this.program.account.workspaceAdmin.fetch(workspaceAdminAcc)
   }
 
+  async getApplicationState(authority: anchor.web3.PublicKey, grant: anchor.web3.PublicKey) {
+    const [applicationAcc, _w] = await this.getApplicationAccount(authority, grant)
+    return this.program.account.application.fetch(applicationAcc)
+  }
+
+  async getApplicationAccount(authority: anchor.web3.PublicKey, grant: anchor.web3.PublicKey) {
+    return anchor.web3.PublicKey.findProgramAddress([
+      Buffer.from('application'),
+      grant.toBuffer(),
+      authority.toBuffer(),
+    ], this.program.programId)
+  }
+
   async getProgramState() {
     const [programAcc, _programBump] = await this.getProgramAccount()
     return this.program.account.programInfo.fetch(programAcc)
   }
 
-  getProgramAccount() {
+  async getProgramAccount() {
     return anchor.web3.PublicKey.findProgramAddress([
       Buffer.from('program_info')
     ], this.program.programId)
