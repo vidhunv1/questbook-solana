@@ -25,7 +25,7 @@ export default class Questbook {
   async rpcCreateWorkspace(metadataHash: string, adminEmail: string, authority?: anchor.web3.Keypair): Promise<anchor.web3.PublicKey> {
     const workspace = anchor.web3.Keypair.generate()
     const [workspaceAdminAcc, _w] = await this.getWorkspaceAdminAccount(workspace.publicKey, 0)
-    
+
     await this.program.rpc.createWorkspace(metadataHash, adminEmail, {
       accounts: {
         workspace: workspace.publicKey,
@@ -159,7 +159,7 @@ export default class Questbook {
     return anchor.web3.PublicKey.findProgramAddress([
       Buffer.from('workspace_admin'),
       workspace.toBuffer(),
-      Buffer.from(adminId+'')
+      Buffer.from(adminId + '')
     ], this.program.programId)
   }
 
@@ -179,5 +179,3 @@ export default class Questbook {
     ], this.program.programId)
   }
 }
-
-
