@@ -81,9 +81,8 @@ pub mod questbook {
 
     pub fn submit_application(
         ctx: Context<SubmitApplication>,
-        milestone: u16,
         metadata_hash: String,
     ) -> Result<()> {
-        instructions::submit_application::handler(ctx, milestone, metadata_hash)
+        instructions::submit_application::handler(ctx, metadata_hash)
     }
 }

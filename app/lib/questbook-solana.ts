@@ -156,14 +156,14 @@ export default class Questbook {
     })
   }
 
-  async rpcSubmitApplication(milestone: number, metadataHash: string, grant: anchor.web3.PublicKey, authority?: anchor.web3.Keypair) {
+  async rpcSubmitApplication(metadataHash: string, grant: anchor.web3.PublicKey, authority?: anchor.web3.Keypair) {
     const [applicationAcc, _w] = await this.getApplicationAccount(authority?.publicKey || this.provider.wallet.publicKey, grant)
     const signers = []
     if (authority) {
       signers.push(authority)
     }
 
-    await this.program.rpc.submitApplication(milestone, metadataHash, {
+    await this.program.rpc.submitApplication(metadataHash, {
       accounts: {
         application: applicationAcc,
         authority: authority != null ? authority.publicKey : this.provider.wallet.publicKey,

@@ -20,17 +20,12 @@ pub struct SubmitApplication<'info> {
     pub system_program: Program<'info, System>,
 }
 
-pub fn handler(
-    ctx: Context<SubmitApplication>,
-    milestone: u16,
-    metadata_hash: String,
-) -> Result<()> {
+pub fn handler(ctx: Context<SubmitApplication>, metadata_hash: String) -> Result<()> {
     let application = &mut ctx.accounts.application;
     let grant = &ctx.accounts.grant;
 
     application.grant = grant.key();
     application.authority = ctx.accounts.authority.key();
-    application.milestone = milestone;
     application.metadata_hash = metadata_hash;
     application.bump = *ctx.bumps.get("application").unwrap();
 
