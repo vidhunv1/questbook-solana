@@ -7,7 +7,7 @@ pub enum MilestoneState {
     Approved,
 }
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug, PartialEq)]
 pub enum ApplicationState {
     Submitted,
     Resubmit,

@@ -1,4 +1,6 @@
-use crate::state::{Application, Grant, APPLICATION_ADMIN_SEED, APPLICATION_SIZE};
+use crate::state::{
+    Application, ApplicationState, Grant, APPLICATION_ADMIN_SEED, APPLICATION_SIZE,
+};
 use anchor_lang::prelude::*;
 
 #[derive(Accounts)]
@@ -27,6 +29,7 @@ pub fn handler(ctx: Context<SubmitApplication>, metadata_hash: String) -> Result
     application.grant = grant.key();
     application.authority = ctx.accounts.authority.key();
     application.metadata_hash = metadata_hash;
+    application.application_state = ApplicationState::Submitted;
     application.bump = *ctx.bumps.get("application").unwrap();
 
     Ok(())

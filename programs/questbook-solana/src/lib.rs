@@ -1,5 +1,6 @@
 use anchor_lang::prelude::*;
 use instructions::*;
+use state::*;
 
 declare_id!("Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS");
 
@@ -84,5 +85,13 @@ pub mod questbook {
         metadata_hash: String,
     ) -> Result<()> {
         instructions::submit_application::handler(ctx, metadata_hash)
+    }
+
+    pub fn update_application_state(
+        ctx: Context<UpdateApplicationState>,
+        admin_id: u32,
+        application_state: ApplicationState,
+    ) -> Result<()> {
+        instructions::update_application_state::handler(ctx, admin_id, application_state)
     }
 }

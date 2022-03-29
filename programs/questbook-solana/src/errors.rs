@@ -8,4 +8,6 @@ pub enum ErrorCode {
     AdminNotInWorkspace,
     #[msg("Not authorized")]
     NotAuthorized,
+    #[msg("Invalid state transition")]
+    InvalidStateTransition,
 }
