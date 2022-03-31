@@ -6,7 +6,7 @@ use crate::ErrorCode;
 use anchor_lang::prelude::*;
 
 #[derive(Accounts)]
-#[instruction(admin_id: u32, application_state: ApplicationState)]
+#[instruction(admin_id: u32, application_state: ApplicationState, application_authority: Pubkey)]
 pub struct UpdateApplicationState<'info> {
     pub grant: Account<'info, Grant>,
     #[account(
@@ -22,7 +22,7 @@ pub struct UpdateApplicationState<'info> {
     #[account(
         mut,
         constraint = application.application_state == ApplicationState::Submitted @ ErrorCode::InvalidStateTransition,
-        seeds=[APPLICATION_ADMIN_SEED.as_bytes(), &grant.key().to_bytes(), &authority.key().to_bytes()],
+        seeds=[APPLICATION_ADMIN_SEED.as_bytes(), &grant.key().to_bytes(), &application_authority.to_bytes()],
         bump = application.bump,
     )]
     pub application: Account<'info, Application>,
@@ -36,6 +36,7 @@ pub fn handler(
     ctx: Context<UpdateApplicationState>,
     _admin_id: u32,
     application_state: ApplicationState,
+    _application_authority: Pubkey,
 ) -> Result<()> {
     let application = &mut ctx.accounts.application;
 

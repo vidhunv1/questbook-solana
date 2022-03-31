@@ -91,7 +91,13 @@ pub mod questbook {
         ctx: Context<UpdateApplicationState>,
         admin_id: u32,
         application_state: ApplicationState,
+        application_authority: Pubkey,
     ) -> Result<()> {
-        instructions::update_application_state::handler(ctx, admin_id, application_state)
+        instructions::update_application_state::handler(
+            ctx,
+            admin_id,
+            application_state,
+            application_authority,
+        )
     }
 }
