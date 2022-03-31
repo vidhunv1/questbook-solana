@@ -175,6 +175,31 @@ export default class Questbook {
     })
   }
 
+  async rpcUpdateApplicationState(
+    grant: anchor.web3.PublicKey,
+    workspace: anchor.web3.PublicKey,
+    adminId: number,
+    admin_authority: anchor.web3.Keypair,
+    application_state: any,
+    application_authority: anchor.web3.PublicKey
+  ) {
+    const [workspaceAdminAcc, _w] = await this.getWorkspaceAdminAccount(workspace, adminId)
+    const [applicationAcc, _x] = await this.getApplicationAccount(application_authority, grant)
+    const signers = [admin_authority]
+
+    await this.program.rpc.updateApplicationState(adminId, application_state, application_authority, {
+      accounts: {
+        grant: grant,
+        workspaceAdmin: workspaceAdminAcc,
+        authority: admin_authority.publicKey,
+        application: applicationAcc,
+        payer: this.provider.wallet.publicKey,
+        systemProgram: anchor.web3.SystemProgram.programId
+      },
+      signers
+    })
+  }
+
   async getWorkspaceState(pk: anchor.web3.PublicKey) {
     return this.program.account.workspace.fetch(pk)
   }

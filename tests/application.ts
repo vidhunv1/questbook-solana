@@ -24,4 +24,17 @@ describe("application", () => {
     assert.equal(applicationState.metadataHash, "metadataHash")
     assert.deepEqual(applicationState.applicationState, { submitted: {} })
   })
+
+  it('updates application state', async () => {
+    await questbook.rpcUpdateApplicationState(grant1, w1, 0, w1Admin, { rejected: {} }, provider.wallet.publicKey)
+    const applicationState = await questbook.getApplicationState(provider.wallet.publicKey, grant1)
+    assert.deepEqual(applicationState.applicationState, { rejected: {} })
+  })
+
+  it('cant update to invalid state', async () => {
+    await assert.rejects(
+     questbook.rpcUpdateApplicationState(grant1, w1, 0, w1Admin, { approved : {} }, provider.wallet.publicKey),
+      { message: '6003: Invalid state transition'}
+    )
+  })
 });
