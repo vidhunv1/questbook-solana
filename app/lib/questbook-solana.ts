@@ -193,8 +193,6 @@ export default class Questbook {
         workspaceAdmin: workspaceAdminAcc,
         authority: admin_authority.publicKey,
         application: applicationAcc,
-        payer: this.provider.wallet.publicKey,
-        systemProgram: anchor.web3.SystemProgram.programId
       },
       signers
     })

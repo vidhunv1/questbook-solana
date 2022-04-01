@@ -26,10 +26,6 @@ pub struct UpdateApplicationState<'info> {
         bump = application.bump,
     )]
     pub application: Account<'info, Application>,
-
-    #[account(mut)]
-    pub payer: Signer<'info>,
-    pub system_program: Program<'info, System>,
 }
 
 pub fn handler(
