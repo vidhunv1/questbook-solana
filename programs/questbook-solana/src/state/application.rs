@@ -22,16 +22,17 @@ pub enum DisbursalType {
     P2P,
 }
 
-pub const APPLICATION_SIZE: usize = 32 + 32 + 2 + 200 + 1 + 8 + 1;
+pub const APPLICATION_SIZE: usize = 32 + 32 + 4 + 4 + 200 + 1 + 8 + 1;
 pub const APPLICATION_ADMIN_SEED: &str = "application";
 
 #[account]
 pub struct Application {
     pub grant: Pubkey,
     pub authority: Pubkey,
-    pub milestone: u16,
+    pub milestones_count: u32,
+    pub milestones_done: u32,
     pub metadata_hash: String,
-    pub application_state: ApplicationState,
+    pub state: ApplicationState,
     pub created_at: i64,
     pub bump: u8,
 }

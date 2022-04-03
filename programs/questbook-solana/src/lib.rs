@@ -100,4 +100,12 @@ pub mod questbook {
             application_authority,
         )
     }
+
+    pub fn complete_application(
+        ctx: Context<CompleteApplication>,
+        admin_id: u32,
+        application_authority: Pubkey,
+    ) -> Result<()> {
+        instructions::complete_application::handler(ctx, admin_id, application_authority)
+    }
 }

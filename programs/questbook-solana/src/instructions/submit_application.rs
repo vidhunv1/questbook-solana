@@ -29,7 +29,7 @@ pub fn handler(ctx: Context<SubmitApplication>, metadata_hash: String) -> Result
     application.grant = grant.key();
     application.authority = ctx.accounts.authority.key();
     application.metadata_hash = metadata_hash;
-    application.application_state = ApplicationState::Submitted;
+    application.state = ApplicationState::Submitted;
     application.bump = *ctx.bumps.get("application").unwrap();
 
     Ok(())
