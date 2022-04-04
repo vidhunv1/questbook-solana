@@ -2,6 +2,7 @@ use anchor_lang::prelude::*;
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
 pub enum MilestoneState {
+    Uninitialized,
     Submitted,
     Requested,
     Approved,
@@ -22,7 +23,7 @@ pub enum DisbursalType {
     P2P,
 }
 
-pub const APPLICATION_SIZE: usize = 32 + 32 + 4 + 4 + 200 + 1 + 8 + 1;
+pub const APPLICATION_SIZE: usize = 32 + 32 + 4 + 4 + 20 + 200 + 1 + 8 + 1;
 pub const APPLICATION_ADMIN_SEED: &str = "application";
 
 #[account]
@@ -31,6 +32,7 @@ pub struct Application {
     pub authority: Pubkey,
     pub milestones_count: u32,
     pub milestones_done: u32,
+    pub milestone_states: [u8; 20], // set as the max possible milestone count
     pub metadata_hash: String,
     pub state: ApplicationState,
     pub created_at: i64,
