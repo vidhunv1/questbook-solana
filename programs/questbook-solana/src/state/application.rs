@@ -1,11 +1,17 @@
 use anchor_lang::prelude::*;
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug)]
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug, Copy)]
 pub enum MilestoneState {
     Uninitialized,
     Submitted,
     Requested,
     Approved,
+}
+
+impl Default for MilestoneState {
+    fn default() -> Self {
+        MilestoneState::Uninitialized
+    }
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug, PartialEq)]
@@ -32,7 +38,7 @@ pub struct Application {
     pub authority: Pubkey,
     pub milestones_count: u32,
     pub milestones_done: u32,
-    pub milestone_states: [u8; 20], // set as the max possible milestone count
+    pub milestone_states: [MilestoneState; 20], // set as the max possible milestone count
     pub metadata_hash: String,
     pub state: ApplicationState,
     pub created_at: i64,
