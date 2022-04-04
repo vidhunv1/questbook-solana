@@ -24,7 +24,6 @@ import "@solana/wallet-adapter-react-ui/styles.css";
 
 // Solana Stuff
 import { clusterApiUrl } from "@solana/web3.js";
-// import JokeArena from './components/JokeArena';
 
 const ConnectToPhantom = () => {
   // The network can be set to 'devnet', 'testnet', or 'mainnet-beta'.
