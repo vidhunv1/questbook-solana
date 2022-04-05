@@ -15,9 +15,9 @@ describe("workspace", () => {
   let w2Admin = anchor.web3.Keypair.generate()
 
   it('creates a new workspace', async () => {
-    w1 = await questbook.rpcCreateWorkspace("https://ipfs.io/1", "a@b.com", w1Admin)
+    w1 = await questbook.rpcCreateWorkspace("QmdnVRCm5hmiMx9151A7odEeQaLuiKbFHy81A3SHeNPWYm", "a@b.com", w1Admin)
     const w1State = await questbook.getWorkspaceState(w1)
-    assert.equal(w1State.metadataHash, "https://ipfs.io/1")
+    assert.equal(w1State.metadataHash, "QmdnVRCm5hmiMx9151A7odEeQaLuiKbFHy81A3SHeNPWYm")
     assert.equal(w1State.authority.toString(), w1Admin.publicKey.toString())
     assert.equal(w1State.adminCount, 1)
     assert.equal(w1State.adminIndex, 1)
@@ -29,9 +29,9 @@ describe("workspace", () => {
     assert.equal(w1AdminState.email, "a@b.com")
     assert.equal(w1AdminState.isAdmin, true)
 
-    w2 = await questbook.rpcCreateWorkspace("https://ipfs.io/2", "b@b.com", w2Admin)
+    w2 = await questbook.rpcCreateWorkspace("QmRvJGRBXdwv1vYCuyupzjx2z7wS3KXYw3ZxpHNSKdqprW", "b@b.com", w2Admin)
     const w2State = await questbook.getWorkspaceState(w2)
-    assert.equal(w2State.metadataHash, "https://ipfs.io/2")
+    assert.equal(w2State.metadataHash, "QmRvJGRBXdwv1vYCuyupzjx2z7wS3KXYw3ZxpHNSKdqprW")
     assert.equal(w2State.authority.toString(), w2Admin.publicKey.toString())
     assert.equal(w2State.adminCount, 1)
     assert.equal(w2State.adminIndex, 1)
@@ -45,9 +45,9 @@ describe("workspace", () => {
   });
 
   it('updates workspace metadataHash', async () => {
-    await questbook.rpcUpdateWorkspace(w1, "https://ipfs.io/3", 0, w1Admin)
+    await questbook.rpcUpdateWorkspace(w1, "QmRvJGRBXdwv1vYCuyupzjx2z7wS3KXYw3ZxpHNSKdqprW", 0, w1Admin)
     const w1State = await questbook.getWorkspaceState(w1)
-    assert.equal(w1State.metadataHash, "https://ipfs.io/3")
+    assert.equal(w1State.metadataHash, "QmRvJGRBXdwv1vYCuyupzjx2z7wS3KXYw3ZxpHNSKdqprW")
     assert.equal(w1State.authority.toString(), w1Admin.publicKey.toString())
     assert.equal(w1State.adminCount, 1)
     assert.equal(w1State.adminIndex, 1)
@@ -58,9 +58,9 @@ describe("workspace", () => {
     const realAuthority = anchor.web3.Keypair.generate()
     const notAuthority = anchor.web3.Keypair.generate()
 
-    const w3 = await questbook.rpcCreateWorkspace("https://ipfs.io/1", "a@b.com", realAuthority)
+    const w3 = await questbook.rpcCreateWorkspace("QmRvJGRBXdwv1vYCuyupzjx2z7wS3KXYw3ZxpHNSKdqprW", "a@b.com", realAuthority)
     await assert.rejects(
-      questbook.rpcUpdateWorkspace(w3, "https://ipfs.io/3", 0, notAuthority),
+      questbook.rpcUpdateWorkspace(w3, "QmekxYCULpsjLRrY4smUbhuhEE1CRJNqzwKnC4pwHwCGZD", 0, notAuthority),
       { message: '2001: A has_one constraint was violated'}
     )
   })
@@ -98,7 +98,7 @@ describe("workspace", () => {
 
     // removed admin should not have workspace access
     await assert.rejects(
-      questbook.rpcUpdateWorkspace(w1, "https://ipfs.io/3", removeAdminId, newAdminAuthority),
+      questbook.rpcUpdateWorkspace(w1, "QmekxYCULpsjLRrY4smUbhuhEE1CRJNqzwKnC4pwHwCGZD", removeAdminId, newAdminAuthority),
       { message: '6002: Not authorized' }
     )
   })

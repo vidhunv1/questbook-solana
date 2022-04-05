@@ -15,8 +15,8 @@ describe("application", () => {
   let w2Admin = anchor.web3.Keypair.generate()
 
   it('submits a new application', async () => {
-    w1 = await questbook.rpcCreateWorkspace("https://ipfs.io/1", "a@b.com", w1Admin)
-    grant1 = await questbook.rpcCreateGrant(0, "ipfs.io/2", w1, w1Admin)
+    w1 = await questbook.rpcCreateWorkspace("QmPvNnnAkrNgJBpFoNCzNFbcqkeoWs1mNuvZYQYH8rKZHY", "a@b.com", w1Admin)
+    grant1 = await questbook.rpcCreateGrant(0, "QmekxYCULpsjLRrY4smUbhuhEE1CRJNqzwKnC4pwHwCGZD", w1, w1Admin)
     await questbook.rpcSubmitApplication("metadataHash", grant1)
 
     const applicationState = await questbook.getApplicationState(provider.wallet.publicKey, grant1)
