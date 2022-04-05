@@ -6,8 +6,8 @@ use crate::ErrorCode;
 use anchor_lang::prelude::*;
 
 #[derive(Accounts)]
-#[instruction(admin_id: u32, application_state: ApplicationState, application_authority: Pubkey)]
-pub struct UpdateApplicationState<'info> {
+#[instruction(admin_id: u32, application_authority: Pubkey)]
+pub struct CompleteApplication<'info> {
     pub grant: Account<'info, Grant>,
     #[account(
         constraint = workspace_admin.workspace == grant.workspace @ ErrorCode::AdminNotInWorkspace,
@@ -21,7 +21,8 @@ pub struct UpdateApplicationState<'info> {
 
     #[account(
         mut,
-        constraint = application.state == ApplicationState::Submitted @ ErrorCode::InvalidStateTransition,
+        constraint = application.grant == grant.key() @ ErrorCode::NotAuthorized,
+        constraint = application.milestones_done == application.milestones_count @ ErrorCode::NotSupported,
         seeds=[APPLICATION_ADMIN_SEED.as_bytes(), &grant.key().to_bytes(), &application_authority.to_bytes()],
         bump = application.bump,
     )]
@@ -29,19 +30,23 @@ pub struct UpdateApplicationState<'info> {
 }
 
 pub fn handler(
-    ctx: Context<UpdateApplicationState>,
+    ctx: Context<CompleteApplication>,
     _admin_id: u32,
-    application_state: ApplicationState,
     _application_authority: Pubkey,
 ) -> Result<()> {
+    let clock = Clock::get().unwrap();
     let application = &mut ctx.accounts.application;
+    let grant = &mut ctx.accounts.grant;
 
-    match application_state {
-        ApplicationState::Approved | ApplicationState::Rejected | ApplicationState::Resubmit => {
-            application.state = application_state
-        }
-        _ => return Err(ErrorCode::InvalidStateTransition.into()),
-    };
+    application.state = ApplicationState::Complete;
+
+    msg!(
+        "ApplicationCompleted: {},{},{},{}",
+        grant.workspace,
+        grant.key(),
+        application.milestones_count,
+        clock.unix_timestamp,
+    );
 
     Ok(())
 }

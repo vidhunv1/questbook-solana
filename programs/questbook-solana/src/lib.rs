@@ -100,4 +100,20 @@ pub mod questbook {
             application_authority,
         )
     }
+
+    pub fn complete_application(
+        ctx: Context<CompleteApplication>,
+        admin_id: u32,
+        application_authority: Pubkey,
+    ) -> Result<()> {
+        instructions::complete_application::handler(ctx, admin_id, application_authority)
+    }
+
+    pub fn update_application_metadata(
+        ctx: Context<UpdateApplicationMetadata>,
+        metadata_hash: String,
+        milestone_count: u32,
+    ) -> Result<()> {
+        instructions::update_application_metadata::handler(ctx, metadata_hash, milestone_count)
+    }
 }

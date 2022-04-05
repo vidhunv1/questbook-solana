@@ -193,8 +193,22 @@ export default class Questbook {
         workspaceAdmin: workspaceAdminAcc,
         authority: admin_authority.publicKey,
         application: applicationAcc,
-        payer: this.provider.wallet.publicKey,
-        systemProgram: anchor.web3.SystemProgram.programId
+      },
+      signers
+    })
+  }
+
+  async rpcCompleteApplication(grant: anchor.web3.PublicKey, workspace: anchor.web3.PublicKey, adminId: number, adminAuthority: anchor.web3.Keypair, applicationAuthority: anchor.web3.PublicKey) {
+    const [workspaceAdminAcc, _w] = await this.getWorkspaceAdminAccount(workspace, adminId)
+    const [applicationAcc, _x] = await this.getApplicationAccount(applicationAuthority, grant)
+    const signers = [adminAuthority]
+
+    await this.program.rpc.completeApplication(adminId, applicationAuthority, {
+      accounts: {
+        grant,
+        workspaceAdmin: workspaceAdminAcc,
+        authority: adminAuthority.publicKey,
+        application:applicationAcc,
       },
       signers
     })
