@@ -51,4 +51,20 @@ describe("application", () => {
       { message: '2001: A has_one constraint was violated'} 
     )
   })
+
+  it('updates application metadatas', async () => {
+    const applicationAuthority = anchor.web3.Keypair.generate()
+    await questbook.rpcSubmitApplication("metadataHash", grant1, applicationAuthority)
+    await assert.rejects(
+      questbook.rpcUpdateApplicationMetadata(grant1, "QmekxYCULpsjLRrY4smUbhuhEE1CRJNqzwKnC4pwHwCGZD", 2, applicationAuthority),
+      { message: '6003: Invalid state transition'}
+    )
+
+    await questbook.rpcUpdateApplicationState(grant1, w1, 0, w1Admin, { resubmit: {} }, applicationAuthority.publicKey)
+    await questbook.rpcUpdateApplicationMetadata(grant1, "QmekxYCULpsjLRrY4smUbhuhEE1CRJNqzwKnC4pwHwCGZD", 2, applicationAuthority)
+
+    const applicationState = await questbook.getApplicationState(applicationAuthority.publicKey, grant1)
+    assert.equal(applicationState.metadataHash, "QmekxYCULpsjLRrY4smUbhuhEE1CRJNqzwKnC4pwHwCGZD")
+    assert.deepEqual(applicationState.state, { submitted: {} })
+  })
 });
