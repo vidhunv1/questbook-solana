@@ -17,7 +17,7 @@ describe("application", () => {
   it('submits a new application', async () => {
     w1 = await questbook.rpcCreateWorkspace("QmPvNnnAkrNgJBpFoNCzNFbcqkeoWs1mNuvZYQYH8rKZHY", "a@b.com", w1Admin)
     grant1 = await questbook.rpcCreateGrant(0, "QmekxYCULpsjLRrY4smUbhuhEE1CRJNqzwKnC4pwHwCGZD", w1, w1Admin)
-    await questbook.rpcSubmitApplication("metadataHash", grant1)
+    await questbook.rpcSubmitApplication("metadataHash", 2, grant1)
 
     const applicationState = await questbook.getApplicationState(provider.wallet.publicKey, grant1)
     assert.equal(applicationState.grant.toString(), grant1.toString())
@@ -39,10 +39,17 @@ describe("application", () => {
     )
   })
 
-  it('completes an application', async () => {
-    await questbook.rpcCompleteApplication(grant1, w1, 0, w1Admin, provider.wallet.publicKey)
+  it('reject application if all milestones are not complete', async () => {
+    await assert.rejects(
+      questbook.rpcCompleteApplication(grant1, w1, 0, w1Admin, provider.wallet.publicKey),
+      { message: '6004: Application milestones not complete'}
+    )
     const applicationState = await questbook.getApplicationState(provider.wallet.publicKey, grant1)
-    assert.deepEqual(applicationState.state, { complete: {} })
+    assert.deepEqual(applicationState.state, { rejected: {} })
+  })
+
+  it('completes an application', async () => {
+    console.warn('TODO: test application completion success cycle with milestones')
   })
 
   it('only an admin can complete the application', async () => {
@@ -54,7 +61,7 @@ describe("application", () => {
 
   it('updates application metadatas', async () => {
     const applicationAuthority = anchor.web3.Keypair.generate()
-    await questbook.rpcSubmitApplication("metadataHash", grant1, applicationAuthority)
+    await questbook.rpcSubmitApplication("metadataHash", 2, grant1, applicationAuthority)
     await assert.rejects(
       questbook.rpcUpdateApplicationMetadata(grant1, "QmekxYCULpsjLRrY4smUbhuhEE1CRJNqzwKnC4pwHwCGZD", 2, applicationAuthority),
       { message: '6003: Invalid state transition'}
@@ -66,5 +73,24 @@ describe("application", () => {
     const applicationState = await questbook.getApplicationState(applicationAuthority.publicKey, grant1)
     assert.equal(applicationState.metadataHash, "QmekxYCULpsjLRrY4smUbhuhEE1CRJNqzwKnC4pwHwCGZD")
     assert.deepEqual(applicationState.state, { submitted: {} })
+    assert.deepEqual(applicationState.milestoneStates[0], { submitted: {} })
+    assert.deepEqual(applicationState.milestoneStates[1], { submitted: {} })
+  })
+
+  it('requests milestone approval', async () => {
+    const applicationAuthority = anchor.web3.Keypair.generate()
+    await questbook.rpcSubmitApplication("metadataHash", 2, grant1, applicationAuthority)
+    await assert.rejects(
+      questbook.rpcRequestMilestoneApproval(grant1, "QmekxYCULpsjLRrY4smUbhuhEE1CRJNqzwKnC4pwHwCGZD", 0, applicationAuthority),
+      { message: '6003: Invalid state transition'}
+    )
+
+    await questbook.rpcUpdateApplicationState(grant1, w1, 0, w1Admin, { resubmit: {} }, applicationAuthority.publicKey)
+    await questbook.rpcUpdateApplicationMetadata(grant1, "QmekxYCULpsjLRrY4smUbhuhEE1CRJNqzwKnC4pwHwCGZD", 2, applicationAuthority)
+    await questbook.rpcUpdateApplicationState(grant1, w1, 0, w1Admin, { approved: {} }, applicationAuthority.publicKey)
+    await questbook.rpcRequestMilestoneApproval(grant1, "QmekxYCULpsjLRrY4smUbhuhEE1CRJNqzwKnC4pwHwCGZD", 0, applicationAuthority)
+
+    const applicationState = await questbook.getApplicationState(applicationAuthority.publicKey, grant1)
+    assert.deepEqual(applicationState.milestoneStates[0], { requested: {} })
   })
 });

@@ -83,8 +83,9 @@ pub mod questbook {
     pub fn submit_application(
         ctx: Context<SubmitApplication>,
         metadata_hash: String,
+        milestone_count: u32,
     ) -> Result<()> {
-        instructions::submit_application::handler(ctx, metadata_hash)
+        instructions::submit_application::handler(ctx, metadata_hash, milestone_count)
     }
 
     pub fn update_application_state(
@@ -115,5 +116,13 @@ pub mod questbook {
         milestone_count: u32,
     ) -> Result<()> {
         instructions::update_application_metadata::handler(ctx, metadata_hash, milestone_count)
+    }
+
+    pub fn request_milestone_approval(
+        ctx: Context<RequestMilestoneApproval>,
+        milestone_id: u32,
+        reason_metadata_hash: String,
+    ) -> Result<()> {
+        instructions::request_milestone_approval::handler(ctx, milestone_id, reason_metadata_hash)
     }
 }

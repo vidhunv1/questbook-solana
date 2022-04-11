@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 
-#[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug, Copy)]
+#[derive(AnchorSerialize, AnchorDeserialize, Clone, Debug, Copy, PartialEq)]
 pub enum MilestoneState {
     Uninitialized,
     Submitted,

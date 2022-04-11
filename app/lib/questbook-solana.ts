@@ -155,14 +155,14 @@ export default class Questbook {
     })
   }
 
-  async rpcSubmitApplication(metadataHash: string, grant: anchor.web3.PublicKey, authority?: anchor.web3.Keypair) {
+  async rpcSubmitApplication(metadataHash: string, milestone_count: number, grant: anchor.web3.PublicKey, authority?: anchor.web3.Keypair) {
     const [applicationAcc, _w] = await this.getApplicationAccount(authority?.publicKey || this.provider.wallet.publicKey, grant)
     const signers = []
     if (authority) {
       signers.push(authority)
     }
 
-    await this.program.rpc.submitApplication(metadataHash, {
+    await this.program.rpc.submitApplication(metadataHash, milestone_count, {
       accounts: {
         application: applicationAcc,
         authority: authority != null ? authority.publicKey : this.provider.wallet.publicKey,
@@ -221,6 +221,23 @@ export default class Questbook {
     }
 
     await this.program.rpc.updateApplicationMetadata(metadataHash, milestoneCount, {
+      accounts: {
+        grant,
+        application: applicationAcc,
+        authority: applicationAuthority?.publicKey || this.provider.wallet.publicKey
+      },
+      signers
+    })
+  }
+
+  async rpcRequestMilestoneApproval(grant: anchor.web3.PublicKey, reasonMetadataHash: string, milestoneId: number, applicationAuthority?: anchor.web3.Keypair) {
+    const [applicationAcc, _x] = await this.getApplicationAccount(applicationAuthority?.publicKey || this.provider.wallet.publicKey, grant)
+    const signers = []
+    if (applicationAuthority) {
+      signers.push(applicationAuthority)
+    }
+
+    await this.program.rpc.requestMilestoneApproval(milestoneId, reasonMetadataHash, {
       accounts: {
         grant,
         application: applicationAcc,

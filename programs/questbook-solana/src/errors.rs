@@ -10,4 +10,6 @@ pub enum ErrorCode {
     NotAuthorized,
     #[msg("Invalid state transition")]
     InvalidStateTransition,
+    #[msg("Application milestones not complete")]
+    MilestonesNotComplete,
 }

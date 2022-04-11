@@ -22,7 +22,7 @@ pub struct CompleteApplication<'info> {
     #[account(
         mut,
         constraint = application.grant == grant.key() @ ErrorCode::NotAuthorized,
-        constraint = application.milestones_done == application.milestones_count @ ErrorCode::NotSupported,
+        constraint = application.milestones_done == application.milestones_count @ ErrorCode::MilestonesNotComplete,
         seeds=[APPLICATION_ADMIN_SEED.as_bytes(), &grant.key().to_bytes(), &application_authority.to_bytes()],
         bump = application.bump,
     )]
