@@ -1,13 +1,13 @@
 [features]
 seeds = false
 [programs.localnet]
-questbook = "Fg6PaFpoGXkYsidMpWTK6W2BeZ7FEfcYkg476zPFsLnS"
+questbook = "8TedDGUNCD8b2y8ePC2dRpGFF5Wjfd9wiQZ9qoezEwGu"
 
 [registry]
 url = "https://anchor.projectserum.com"
 
 [provider]
-cluster = "localnet"
+cluster = "devnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]

@@ -35,14 +35,14 @@ describe("application", () => {
   it('cant update to invalid state', async () => {
     await assert.rejects(
      questbook.rpcUpdateApplicationState(grant1, w1, 0, w1Admin, { approved : {} }, provider.wallet.publicKey),
-      { message: '6003: Invalid state transition'}
+      { message: 'failed to send transaction: Transaction simulation failed: Error processing Instruction 0: custom program error: 0x1773'}
     )
   })
 
   it('reject application if all milestones are not complete', async () => {
     await assert.rejects(
       questbook.rpcCompleteApplication(grant1, w1, 0, w1Admin, provider.wallet.publicKey),
-      { message: '6004: Application milestones not complete'}
+      { message: 'failed to send transaction: Transaction simulation failed: Error processing Instruction 0: custom program error: 0x1774'}
     )
     const applicationState = await questbook.getApplicationState(provider.wallet.publicKey, grant1)
     assert.deepEqual(applicationState.state, { rejected: {} })
@@ -64,7 +64,7 @@ describe("application", () => {
     await questbook.rpcSubmitApplication("metadataHash", 2, grant1, applicationAuthority)
     await assert.rejects(
       questbook.rpcUpdateApplicationMetadata(grant1, "QmekxYCULpsjLRrY4smUbhuhEE1CRJNqzwKnC4pwHwCGZD", 2, applicationAuthority),
-      { message: '6003: Invalid state transition'}
+      { message: 'failed to send transaction: Transaction simulation failed: Error processing Instruction 0: custom program error: 0x1773'}
     )
 
     await questbook.rpcUpdateApplicationState(grant1, w1, 0, w1Admin, { resubmit: {} }, applicationAuthority.publicKey)
@@ -82,7 +82,7 @@ describe("application", () => {
     await questbook.rpcSubmitApplication("metadataHash", 2, grant1, applicationAuthority)
     await assert.rejects(
       questbook.rpcRequestMilestoneApproval(grant1, "QmekxYCULpsjLRrY4smUbhuhEE1CRJNqzwKnC4pwHwCGZD", 0, applicationAuthority),
-      { message: '6003: Invalid state transition'}
+      { message: 'failed to send transaction: Transaction simulation failed: Error processing Instruction 0: custom program error: 0x1773'}
     )
 
     await questbook.rpcUpdateApplicationState(grant1, w1, 0, w1Admin, { resubmit: {} }, applicationAuthority.publicKey)

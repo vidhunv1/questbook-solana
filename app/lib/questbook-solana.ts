@@ -207,7 +207,7 @@ export default class Questbook {
         grant,
         workspaceAdmin: workspaceAdminAcc,
         authority: adminAuthority.publicKey,
-        application:applicationAcc,
+        application: applicationAcc,
       },
       signers
     })
