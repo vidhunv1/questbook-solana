@@ -14,12 +14,14 @@ import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets";
 import CreateWorkSpace from "components/CreateWorkspace";
 import UpdateWorkSpace from "components/UpdateWorkspace";
 import AddWorkspaceAdmin from "components/AddWorkspaceAdmin";
+import CreateGrant from "components/CreateGrant";
+import SubmitApplication from "components/SubmitApplication"
 
 const Home: NextPage = () => {
   const network = WalletAdapterNetwork.Devnet;
   const endpoint = useMemo(() => clusterApiUrl(network), [network]);
   const wallets = useMemo(() => [new PhantomWalletAdapter()], [network]);
-  wallets[0].connect();
+  // wallets[0].connect();
   return (
     <ConnectionProvider endpoint={endpoint}>
       <WalletProvider wallets={wallets} autoConnect>
@@ -32,6 +34,9 @@ const Home: NextPage = () => {
           <br />
           <AddWorkspaceAdmin />
           <hr />
+          <CreateGrant />
+          <hr />
+          <SubmitApplication />
         </WalletModalProvider>
       </WalletProvider>
     </ConnectionProvider>
