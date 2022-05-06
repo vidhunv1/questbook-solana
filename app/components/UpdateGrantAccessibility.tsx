@@ -17,15 +17,18 @@ const getWorkspaceAdminAccount = async (
   );
 };
 
-const UpdateWorkspace = () => {
+const UpdateGrantAccessibility = () => {
   const program = useSolanaProgram();
   const [workspacePubKey, setWorkspacePubKey] = useState("");
-  const [metadataHash, setMetadataHash] = useState("");
+  const [canAcceptApplications, setCanAcceptApplications] = useState("");
   const [adminId, setAdminId] = useState("");
+  const [grantPubKey, setGrantPubKey] = useState("")
   const [status, setStatus] = useState("");
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const workspace = new anchor.web3.PublicKey(workspacePubKey);
+    const grant = new anchor.web3.PublicKey(grantPubKey)
+
     const [workspaceAdminAcc, _w] = await getWorkspaceAdminAccount(
       workspace,
       adminId as unknown as number,
@@ -33,14 +36,15 @@ const UpdateWorkspace = () => {
     );
     //const signers = [];
 
-    await program.rpc.updateWorkspace(metadataHash, adminId, {
-      accounts: {
-        workspace: workspacePubKey,
-        workspaceAdmin: workspaceAdminAcc,
-        authority: program.provider.wallet.publicKey,
-      },
-      //signers,
-    });
+    program.rpc.updateGrantAccessibility(adminId, canAcceptApplications, {
+        accounts: {
+          grant: grant,
+          workspace: workspace,
+          workspaceAdmin: workspaceAdminAcc,
+          authority: program.provider.wallet.publicKey,
+        },
+        //signers: [workspaceAdminAuthority]
+      })
     setStatus("Updated!")
   };
   return (
@@ -50,7 +54,7 @@ const UpdateWorkspace = () => {
         handleSubmit(e);
       }}
     >
-      <button type="submit">Update workspace</button>
+      <button type="submit">Update grant accessibility</button>
       <br />
       <input
         type="text"
@@ -60,12 +64,20 @@ const UpdateWorkspace = () => {
         onChange={(e) => setWorkspacePubKey(e.target.value)}
       />
 
+<input
+        type="text"
+        name="grantPubKey"
+        placeholder="grantPubKey"
+        value={grantPubKey}
+        onChange={(e) => setGrantPubKey(e.target.value)}
+      />
+
       <input
         type="text"
-        name="MetadataHash"
-        placeholder="https://ipfs.io/123"
-        value={metadataHash}
-        onChange={(e) => setMetadataHash(e.target.value)}
+        name="canAcceptApplications"
+        placeholder="canAcceptApplications"
+        value={canAcceptApplications}
+        onChange={(e) => setCanAcceptApplications(e.target.value)}
       />
 
       <input
@@ -82,4 +94,4 @@ const UpdateWorkspace = () => {
   );
 };
 
-export default UpdateWorkspace;
+export default UpdateGrantAccessibility;

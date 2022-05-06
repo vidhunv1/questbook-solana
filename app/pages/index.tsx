@@ -14,8 +14,11 @@ import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets";
 import CreateWorkSpace from "components/CreateWorkspace";
 import UpdateWorkSpace from "components/UpdateWorkspace";
 import AddWorkspaceAdmin from "components/AddWorkspaceAdmin";
+import RemoveWorkspaceAdmin from "components/RemoveWorkspaceAdmin";
 import CreateGrant from "components/CreateGrant";
-import SubmitApplication from "components/SubmitApplication"
+import SubmitApplication from "components/SubmitApplication";
+import UpdateGrant from "components/UpdateGrant";
+import UpdateGrantAccessibility from "components/UpdateGrantAccessibility";
 
 const Home: NextPage = () => {
   const network = WalletAdapterNetwork.Devnet;
@@ -33,8 +36,14 @@ const Home: NextPage = () => {
           <UpdateWorkSpace />
           <br />
           <AddWorkspaceAdmin />
+          <br />
+          <RemoveWorkspaceAdmin />
           <hr />
           <CreateGrant />
+          <br />
+          <UpdateGrant />
+          <br />
+          <UpdateGrantAccessibility />
           <hr />
           <SubmitApplication />
         </WalletModalProvider>

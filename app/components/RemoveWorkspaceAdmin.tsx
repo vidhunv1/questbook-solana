@@ -25,13 +25,12 @@ const getWorkspaceState = (
   return program.account.workspace.fetch(pk);
 };
 
-const AddWorkspaceAdmin = () => {
+const RemoveWorkspaceAdmin = () => {
   const program = useSolanaProgram();
   const [workspacePubKey, setWorkspacePubKey] = useState("");
   const [workspaceAdminId, setWorkspaceAdminId] = useState("");
-  const [newAdminEmail, setNewAdminEmail] = useState("");
-  const [newAdminAuthority, setNewAdminAuthority] = useState("");
-  const [newAdmin, SetNewAdmin] = useState("");
+  const [removeAdminId, setRemoveAdminId] = useState("");
+  
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const workspace = new anchor.web3.PublicKey(workspacePubKey);
@@ -41,7 +40,7 @@ const AddWorkspaceAdmin = () => {
       workspaceAdminId as unknown as number,
       new PublicKey(program.programId)
     );
-    const [newWorkspaceAdminAcc, _w2] = await getWorkspaceAdminAccount(
+    const [removeWorkspaceAdminAcc, _w2] = await getWorkspaceAdminAccount(
       workspace,
       workspaceState.adminIndex,
       new PublicKey(program.programId)
@@ -49,25 +48,24 @@ const AddWorkspaceAdmin = () => {
     
     console.log(workspace.toString());
     console.log(workspaceAdminAcc.toString());
-    console.log(newWorkspaceAdminAcc.toString());
+    console.log(removeWorkspaceAdminAcc.toString());
     console.log(program.provider)
     await program.rpc.addWorkspaceAdmin(
       workspaceAdminId,
-      newAdminEmail,
-      new PublicKey(newAdminAuthority),
+      removeAdminId,
       {
         accounts: {
           workspace: workspace,
           workspaceAdmin: workspaceAdminAcc,
           authority: workspaceAdminAcc,
-          newWorkspaceAdmin: newWorkspaceAdminAcc,
+          newWorkspaceAdmin: removeWorkspaceAdminAcc,
           payer: program.provider.wallet.publicKey,
           systemProgram: anchor.web3.SystemProgram.programId,
         },
         //  signers: [], can you obtain in a secure way?
       }
     );
-    SetNewAdmin(newWorkspaceAdminAcc.toString());
+    
   };
   return (
     <div>
@@ -76,7 +74,7 @@ const AddWorkspaceAdmin = () => {
           handleSubmit(e);
         }}
       >
-        <button type="submit">Add workspace Admin</button>
+        <button type="submit">Remove workspace Admin</button>
         <br />
         <input
           type="text"
@@ -94,26 +92,18 @@ const AddWorkspaceAdmin = () => {
           onChange={(e) => setWorkspaceAdminId(e.target.value)}
         />
 
-        <input
-          type="text"
-          name="newAdminEmail"
-          placeholder="newAdminEmail"
-          value={newAdminEmail}
-          onChange={(e) => setNewAdminEmail(e.target.value)}
-        />
-
-        <input
-          type="text"
-          name="newAdminAuthority"
-          placeholder="newAdminAuthority"
-          value={newAdminAuthority}
-          onChange={(e) => setNewAdminAuthority(e.target.value)}
+<input
+          type="number"
+          name="removeAdminId"
+          placeholder="removeAdminId"
+          value={removeAdminId}
+          onChange={(e) => setRemoveAdminId(e.target.value)}
         />
       </form>
       <br />
-      {newAdmin}
+      
     </div>
   );
 };
 
-export default AddWorkspaceAdmin;
+export default RemoveWorkspaceAdmin;

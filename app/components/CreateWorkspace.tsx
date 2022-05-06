@@ -21,6 +21,7 @@ const CreateWorkspace = () => {
   const program = useSolanaProgram();
   const [adminEmail, setAdminEmail] = useState("");
   const [metadataHash, setMetadataHash] = useState("");
+  const [createdWorkspace, setCreatedWorkspace] = useState("");
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const workspace = anchor.web3.Keypair.generate();
@@ -41,33 +42,37 @@ const CreateWorkspace = () => {
       },
       signers,
     });
-    console.log("done");
+    setCreatedWorkspace(workspace.publicKey.toString());
   };
   return (
-    <form
-      onSubmit={(e) => {
-        handleSubmit(e);
-      }}
-    >
-      <button type="submit">Create workspace</button>
-      <br />
-      <input
-        id="email"
-        type="email"
-        name="email"
-        placeholder="example@company.com"
-        value={adminEmail}
-        onChange={(e) => setAdminEmail(e.target.value)}
-      />
+    <div>
+      <form
+        onSubmit={(e) => {
+          handleSubmit(e);
+        }}
+      >
+        <button type="submit">Create workspace</button>
+        <br />
+        <input
+          id="email"
+          type="email"
+          name="email"
+          placeholder="example@company.com"
+          value={adminEmail}
+          onChange={(e) => setAdminEmail(e.target.value)}
+        />
 
-      <input
-        type="text"
-        name="MetadataHash"
-        placeholder="https://ipfs.io/123"
-        value={metadataHash}
-        onChange={(e) => setMetadataHash(e.target.value)}
-      />
-    </form>
+        <input
+          type="text"
+          name="MetadataHash"
+          placeholder="https://ipfs.io/123"
+          value={metadataHash}
+          onChange={(e) => setMetadataHash(e.target.value)}
+        />
+      </form>
+      <br />
+      {createdWorkspace}
+    </div>
   );
 };
 
