@@ -5,5 +5,5 @@ export const connectionsOptions = {
 };
 
 export const programAddress = new PublicKey(
-    '5LAbme3Qrnmu4d5QL6paCCuvLr2N2AFaXBFxHNaiLJQX'
+    '8TedDGUNCD8b2y8ePC2dRpGFF5Wjfd9wiQZ9qoezEwGu'
 );
